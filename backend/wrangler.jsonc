@@ -6,9 +6,11 @@
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
-   "vars": {
+  "vars": {
+  "DATABASE_URL": "prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza181SnV3eHFmcWhUUG1pZk5VbUh1RUUiLCJhcGlfa2V5IjoiMDFLN1ZWV041Rlg2V1lZNFhRNzdNODVFS0QiLCJ0ZW5hbnRfaWQiOiIyMzU0ZDQ0MWZjNDc5OTQ4YzdiOGU4NjVmNjIxYWYyOTdiM2UwZGZjZGViM2VhNzJiMjdmZDZkYzcwMDhjZWZlIiwiaW50ZXJuYWxfc2VjcmV0IjoiZWI1MWY0M2QtZmNhNS00MTAzLWFkNDYtNjc2YTNlYTJlNDVjIn0.GAup7_Ehn9DGEwpHPJapQLw7a56Eb_XaVwE2JZRBli0",
+  "DIRECT_URL": "postgresql://Learning_owner:zyGwLdv0SsZ7@ep-lucky-sunset-a5rh533x-pooler.us-east-2.aws.neon.tech/Learning?sslmode=require&channel_binding=require"
+}
 
-   },
   // "kv_namespaces": [
   //   {
   //     "binding": "MY_KV_NAMESPACE",

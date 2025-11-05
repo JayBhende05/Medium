@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import auth from './routes/authRoutes'
+import { prismaMiddleware } from './middleware/prismaMiddleware'
 // import blog from './routes/blogRoutes'
 
 
@@ -10,6 +11,7 @@ type Env = {
 }
 
 const app = new Hono<{ Bindings: Env }>()
+app.use('*', prismaMiddleware);
 
 app.route('/api/v1/auth/', auth )
 // app.route('/api/v1/blog', blog)

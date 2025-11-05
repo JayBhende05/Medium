@@ -1,0 +1,65 @@
+Problem Summary
+
+trying to use Prisma Accelerate with Hono running on Cloudflare Workers to create users via a /signup route.
+
+faced two main issues:
+- PrismaClientInitializationError
+- Environment variable not found: DATABASE_URL
+
+
+Reason: Cloudflare Workers do not use Node’s process.env.
+
+Prisma was trying to read process.env.DATABASE_URL but Workers don’t populate that.
+
+Result: Prisma could not connect to the database, so all queries failed.
+
+Error Handling Issue
+
+original catch block returned c.json({ data: error, msg: "Error Occurred" }).
+
+In Cloudflare Workers, the Error object cannot be fully serialized into JSON.
+
+Result: You were only seeing { name: ..., clientVersion: ... } instead of the real error message.
+
+Solution Steps
+
+Define environment variables in Cloudflare (wrangler.jsonc)
+
+Added DATABASE_URL and DIRECT_URL in the "vars" section:
+
+"vars": {
+  "DATABASE_URL": "prisma://accelerate.prisma-data.net/?api_key=YOUR_KEY",
+  "DIRECT_URL": "postgresql://..."
+}
+
+
+Workers now have access to these variables via c.env.DATABASE_URL.
+
+Pass DATABASE_URL explicitly to Prisma
+
+Updated prisma.ts:
+
+export const getPrisma = (databaseUrl: string) => new PrismaClient({ datasourceUrl: databaseUrl }).$extends(withAccelerate())
+
+
+In the route, we create Prisma client using c.env.DATABASE_URL:
+
+const prisma = getPrisma(c.env.DATABASE_URL)
+
+
+Fix error logging
+
+Instead of returning the raw Error, we now return:
+
+error.message || JSON.stringify(error)
+
+
+This gives a readable error in the response and logs the real cause.
+
+Result
+
+Prisma now successfully connects to your database via Prisma Accelerate in the Cloudflare Workers environment.
+
+Signup requests work and create users.
+
+Errors are meaningful and debuggable.
