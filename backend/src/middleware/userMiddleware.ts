@@ -18,9 +18,9 @@ export const userMiddleware: MiddlewareHandler = async (c,next) =>{
     return c.json({msg : " Missing Authorization Header, Can't Access !!! "})
   }
 
-  const tokenToVerify = token.split(' ')[1]
+  // const tokenToVerify = token.split(' ')[1]
 
-  const decodedPayload = await verify(tokenToVerify, JWT_SECRET);
+  const decodedPayload = await verify(token, JWT_SECRET);
 
   if(!decodedPayload){
     return c.json({msg : "Signin Again !!"})
