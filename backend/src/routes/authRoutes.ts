@@ -1,9 +1,12 @@
 import { Hono } from 'hono'
 import { getPrisma } from '../utils/prisma'
 import { sign } from 'hono/jwt'
+import { userMiddleware } from '../middleware/userMiddleware'
 
 
-const auth = new Hono<{ Bindings: { DATABASE_URL: string, JWT_SECRET: string } }>()
+const auth = new Hono<{ Bindings: { DATABASE_URL: string, JWT_SECRET: string }, Variables : {
+  userId : string
+} }>()
 // Use the middleware
 // auth.use('*', prismaMiddleware)
 
@@ -65,7 +68,7 @@ auth.post('/signin', async (c)=>{
     const payload = {
   sub: user.id,
   role: 'user',
-  exp: Math.floor(Date.now() / 1000) + 60 * 5, // Token expires in 5 minutes
+  //exp: Math.floor(Date.now() / 1000) + 60 * 5, // Token expires in 5 minutes
 }
 
     const token = await sign(payload, c.env.JWT_SECRET)
@@ -84,9 +87,15 @@ auth.post('/signin', async (c)=>{
 )
 
 
-auth.get('/get', async (c) => {
+auth.get('/get', userMiddleware , async (c) => {
   try {
-    // const prisma = c.get('prisma') // ✅ Access prisma from context
+    const userId = c.get('userId') ;
+
+    if(userId){
+      return c.json({msg : "GOt Userid", userId})
+    }
+
+    return c.json({msg : "Problem in middleware"})
 
     // const users = await prisma.user.findMany({
     //   where: {
